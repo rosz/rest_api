@@ -5,6 +5,6 @@ A project provides 5 methods:
 
 * POST/add --> receives JSON, returns a summary of given numbers
 * POST/multiply --> receives JSON, returns a multplication of given numbers
-* POST/memory --> saves numbers, returns "status" : "ok"
+* PUT/memory --> saves numbers, returns "status" : "ok"
 * GET/memory --> returns all numbers from the data base
 * DELETE/memory --> deletes all numbers from the database, returns "status" : "ok"
