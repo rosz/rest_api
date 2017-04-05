@@ -11,14 +11,28 @@ class MainHandler(RequestHandler):
 # sum up numbers from memory
 class SumUpNumbers(RequestHandler):
     def post(self):
-        self.write("adding numbers")
-
+        numbers = self.request.body
+        # numbers = numbers.decode('utf-8')
+        numbers_array = json.loads(numbers)
+        result = 0
+        for number in numbers_array:
+            number = int(number)
+            result += number
+        self.write(result)
+    get = post
 
 # multiply numbers from memory
 class MultiplyNumbers(RequestHandler):
     def post(self):
-        self.write("multiplying numbers")
-
+        numbers = self.request.body
+        numbers = numbers.decode('utf-8')
+        numbers_array = json.loads(numbers)
+        result = 1
+        for number in numbers_array:
+            number = int(number)
+            result *= number
+        self.write(result)
+    get = post
 
 # save new number in memory
 class SaveNumbers(RequestHandler):
@@ -37,8 +51,6 @@ if __name__ == "__main__":
         (r"/", MainHandler),
         (r"/add", SumUpNumbers),
         (r"/multiply", MultiplyNumbers),
-        (r"/memory", SaveNumbers),
-        (r"/memory", SaveNumbers),
         (r"/memory", SaveNumbers)
     ])
     application.listen(8888)
