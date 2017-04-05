@@ -1,3 +1,5 @@
+""" """
+
 import tornado.ioloop
 import json
 from tornado.web import RequestHandler
@@ -12,13 +14,19 @@ class MainHandler(RequestHandler):
 class SumUpNumbers(RequestHandler):
     def post(self):
         numbers = self.request.body
-        # numbers = numbers.decode('utf-8')
+        print(numbers)
+        numbers = numbers.decode('utf-8')
         numbers_array = json.loads(numbers)
         result = 0
-        for number in numbers_array:
+
+        for number in numbers_array["numbers"]:
             number = int(number)
             result += number
-        self.write(result)
+
+        result_dict = {"numbers": []}
+        result_dict["numbers"].append(result)
+
+        return json.dumps(result_dict)
     get = post
 
 # multiply numbers from memory
@@ -27,11 +35,16 @@ class MultiplyNumbers(RequestHandler):
         numbers = self.request.body
         numbers = numbers.decode('utf-8')
         numbers_array = json.loads(numbers)
-        result = 1
-        for number in numbers_array:
+        result = 0
+
+        for number in numbers_array["numbers"]:
             number = int(number)
             result *= number
-        self.write(result)
+
+        result_dict = {"numbers": []}
+        result_dict["numbers"].append(result)
+
+        return json.dumps(result_dict)
     get = post
 
 # save new number in memory
