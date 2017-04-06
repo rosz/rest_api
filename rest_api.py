@@ -1,5 +1,3 @@
-""" """
-
 import tornado.ioloop
 import json
 from tornado.web import RequestHandler
@@ -13,50 +11,68 @@ class MainHandler(RequestHandler):
 # sum up numbers from memory
 class SumUpNumbers(RequestHandler):
     def post(self):
+        # decoding JSON
         numbers = self.request.body
-        print(numbers)
         numbers = numbers.decode('utf-8')
         numbers_array = json.loads(numbers)
         result = 0
 
+        # arithmetics, add up numbers
         for number in numbers_array["numbers"]:
             number = int(number)
             result += number
 
-        result_dict = {"numbers": []}
-        result_dict["numbers"].append(result)
+        result_dict = {"result": result}
 
+        # encoding JSON
         return json.dumps(result_dict)
-    get = post
 
 # multiply numbers from memory
 class MultiplyNumbers(RequestHandler):
     def post(self):
+        # decoding JSON
         numbers = self.request.body
         numbers = numbers.decode('utf-8')
         numbers_array = json.loads(numbers)
-        result = 0
+        result = 1
 
+        # arithmetics, add up numbers
         for number in numbers_array["numbers"]:
             number = int(number)
-            result *= number
+            result += number
 
-        result_dict = {"numbers": []}
-        result_dict["numbers"].append(result)
+        result_dict = {"result": result}
 
+        # encoding JSON
         return json.dumps(result_dict)
-    get = post
 
-# save new number in memory
+# memory as list
+saved_numbers = []
+
+
+# manipulate memory
 class SaveNumbers(RequestHandler):
+    # save new number in memory, return status
     def put(self):
-        self.write("saving numbers in the memory")
+        number = self.request.body
+        number = number.decode('utf-8')
+        number_dict = json.loads(number)
+        saved_numbers.append(number_dict["number"])
+        json.dumps(saved_numbers)
 
+        status = {"status" : "ok"}
+        return json.dumps(status)
+
+    # return all numbers from memory
     def get(self):
-        self.write("printing out numbers from the memory")
+        result_dict = {"memory": saved_numbers}
+        return json.dumps(result_dict)
 
+    # clean memory, return status
     def delete(self):
-        self.write("delete numbers from the memory")
+        saved_numbers = []
+        status = {"status" : "ok"}
+        return json.dumps(status)
 
 
 if __name__ == "__main__":
