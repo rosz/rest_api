@@ -25,7 +25,7 @@ class SumUpNumbers(RequestHandler):
         result_dict = {"result": result}
 
         # encoding JSON
-        return json.dumps(result_dict)
+        return self.write(json.dumps(result_dict))
 
 # multiply numbers from memory
 class MultiplyNumbers(RequestHandler):
@@ -39,12 +39,12 @@ class MultiplyNumbers(RequestHandler):
         # arithmetics, add up numbers
         for number in numbers_array["numbers"]:
             number = int(number)
-            result += number
+            result *= number
 
         result_dict = {"result": result}
 
         # encoding JSON
-        return json.dumps(result_dict)
+        return self.write(json.dumps(result_dict))
 
 # memory as list
 saved_numbers = []
@@ -60,7 +60,7 @@ class SaveNumbers(RequestHandler):
         saved_numbers.append(number_dict["number"])
         json.dumps(saved_numbers)
 
-        status = {"status" : "ok"}
+        status = {"status": "ok"}
         return json.dumps(status)
 
     # return all numbers from memory
@@ -71,7 +71,7 @@ class SaveNumbers(RequestHandler):
     # clean memory, return status
     def delete(self):
         saved_numbers = []
-        status = {"status" : "ok"}
+        status = {"status": "ok"}
         return json.dumps(status)
 
 
