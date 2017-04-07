@@ -16,11 +16,13 @@ class SumUpNumbers(RequestHandler):
         # decoding JSON
         numbers = self.request.body
         numbers = numbers.decode('utf-8')
+        # catch format exceptions
         try:
             numbers_dict = json.loads(numbers)
         except:
             raise HTTPError(400, "wrong format, JSON expected")
 
+        #catch exception: key value error
         if "numbers" not in numbers_dict:
             raise HTTPError(400, "dictionary key not found")
 
@@ -47,17 +49,20 @@ class MultiplyNumbers(RequestHandler):
         # decoding JSON
         numbers = self.request.body
         numbers = numbers.decode('utf-8')
+        # catch format exceptions
         try:
             numbers_dict = json.loads(numbers)
         except:
             raise HTTPError(400, "wrong format, JSON expected")
 
+        # catch exception: key value error
         if "numbers" not in numbers_dict:
             raise HTTPError(400, "dictionary key not found")
 
         # arithmetics, add up numbers
         result = 1
         for number in numbers_dict["numbers"]:
+            # catch data type exception
             try:
                 number = float(number)
             except ValueError:
@@ -82,14 +87,17 @@ class SaveNumbers(RequestHandler):
     def put(self):
         number = self.request.body
         number = number.decode('utf-8')
+        # catch format exceptions
         try:
             number_dict = json.loads(number)
         except:
             raise HTTPError(400, "wrong format, JSON expected")
 
+        # catch key value exception
         if "number" not in number_dict:
             raise HTTPError(400, "dictionary key not found")
 
+        # catch data type exception
         if not isinstance(number_dict["number"], Number):
             raise HTTPError(400, "only numeral format expected")
 
