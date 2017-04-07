@@ -61,18 +61,19 @@ class SaveNumbers(RequestHandler):
         json.dumps(saved_numbers)
 
         status = {"status": "ok"}
-        return json.dumps(status)
+        return self.write(json.dumps(status))
 
     # return all numbers from memory
     def get(self):
         result_dict = {"memory": saved_numbers}
-        return json.dumps(result_dict)
+        return self.write(json.dumps(result_dict))
 
     # clean memory, return status
     def delete(self):
+        global saved_numbers
         saved_numbers = []
         status = {"status": "ok"}
-        return json.dumps(status)
+        return self.write(json.dumps(status))
 
 
 if __name__ == "__main__":
