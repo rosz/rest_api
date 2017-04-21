@@ -4,14 +4,17 @@ from tornado.web import RequestHandler
 from tornado.web import HTTPError
 from numbers import Number
 
-# MainHandler
-class MainHandler(RequestHandler):
-    def get(self):
-        self.write("REST API based on Tornado framework")
+# # MainHandler
+# class MainHandler(RequestHandler):
+#     def get(self):
+#         self.write("REST API based on Tornado framework")
 
 
 # sum up numbers from memory
 class SumUpNumbers(RequestHandler):
+    def get(self):
+            self.write("REST API based on Tornado framework")
+
     def post(self):
         # decoding JSON
         numbers = self.request.body
@@ -22,7 +25,7 @@ class SumUpNumbers(RequestHandler):
         except:
             raise HTTPError(400, "wrong format, JSON expected")
 
-        #catch exception: key value error
+        # catch exception: key value error
         if "numbers" not in numbers_dict:
             raise HTTPError(400, "dictionary key not found")
 
@@ -122,7 +125,7 @@ class SaveNumbers(RequestHandler):
 
 if __name__ == "__main__":
     application = tornado.web.Application([
-        (r"/", MainHandler),
+        (r"/", SumUpNumbers),
         (r"/add", SumUpNumbers),
         (r"/multiply", MultiplyNumbers),
         (r"/memory", SaveNumbers)
