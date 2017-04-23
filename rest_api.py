@@ -4,34 +4,32 @@ from tornado.web import RequestHandler
 from tornado.web import HTTPError
 from numbers import Number
 
-# # MainHandler
-# class MainHandler(RequestHandler):
-#     def get(self):
-#         self.write("REST API based on Tornado framework")
-
-
-# sum up numbers from memory
-class SumUpNumbers(RequestHandler):
-    def get(self):
-            self.write("REST API based on Tornado framework")
-
-    def post(self):
-        # decoding JSON
-        numbers = self.request.body
-        numbers = numbers.decode('utf-8')
-        # catch format exceptions
-        try:
-            numbers_dict = json.loads(numbers)
-        except:
+class BasicHandler(RequestHandler):
+    # verify if Content-Type == application/json
+    def verify_json(self, header):
+        if header.get("Content-Type", "") != "application/json":
             raise HTTPError(400, "wrong format, JSON expected")
 
+    # unify input json data to proceed
+    def unify_data(self, body):
+        numbers = body.decode('utf-8')
+        numbers_dict = json.loads(numbers)
+        return numbers_dict
+
+# sum up numbers from memory
+class SumUpNumbers(BasicHandler):
+    def post(self):
+        # catch format exceptions
+        self.verify_json(self.request.headers)
+        # decoding JSON
+        data = self.unify_data(self.request.body)
         # catch exception: key value error
-        if "numbers" not in numbers_dict:
+        if "numbers" not in data:
             raise HTTPError(400, "dictionary key not found")
 
         # arithmetics, add up numbers
         result = 0
-        for number in numbers_dict["numbers"]:
+        for number in data["numbers"]:
             try:
                 number = float(number)
             except ValueError:
@@ -47,24 +45,19 @@ class SumUpNumbers(RequestHandler):
         return self.write(json.dumps(result_dict))
 
 # multiply numbers from memoryczy wystarczy, że zrobię
-class MultiplyNumbers(RequestHandler):
+class MultiplyNumbers(BasicHandler):
     def post(self):
-        # decoding JSON
-        numbers = self.request.body
-        numbers = numbers.decode('utf-8')
         # catch format exceptions
-        try:
-            numbers_dict = json.loads(numbers)
-        except:
-            raise HTTPError(400, "wrong format, JSON expected")
-
+        self.verify_json(self.request.headers)
+        # decoding JSON
+        data = self.unify_data(self.request.body)
         # catch exception: key value error
-        if "numbers" not in numbers_dict:
+        if "numbers" not in data:
             raise HTTPError(400, "dictionary key not found")
 
         # arithmetics, add up numbers
         result = 1
-        for number in numbers_dict["numbers"]:
+        for number in data["numbers"]:
             # catch data type exception
             try:
                 number = float(number)
@@ -85,26 +78,22 @@ saved_numbers = []
 
 
 # manipulate memory
-class SaveNumbers(RequestHandler):
+class SaveNumbers(BasicHandler):
     # save new number in memory, return status
     def put(self):
-        number = self.request.body
-        number = number.decode('utf-8')
         # catch format exceptions
-        try:
-            number_dict = json.loads(number)
-        except:
-            raise HTTPError(400, "wrong format, JSON expected")
-
-        # catch key value exception
-        if "number" not in number_dict:
+        self.verify_json(self.request.headers)
+        # decoding JSON
+        data = self.unify_data(self.request.body)
+        # catch exception: key value error
+        if "number" not in data:
             raise HTTPError(400, "dictionary key not found")
 
         # catch data type exception
-        if not isinstance(number_dict["number"], Number):
+        if not isinstance(data["number"], Number):
             raise HTTPError(400, "only numeral format expected")
 
-        saved_numbers.append(number_dict["number"])
+        saved_numbers.append(data["number"])
         json.dumps(saved_numbers)
 
         status = {"status": "ok"}
