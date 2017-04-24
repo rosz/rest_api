@@ -1,5 +1,6 @@
 import tornado.ioloop
 import json
+import functools
 from tornado.web import RequestHandler
 from tornado.web import HTTPError
 from numbers import Number
@@ -13,7 +14,10 @@ class BasicHandler(RequestHandler):
     # unify input json data to proceed
     def unify_data(self, body):
         numbers = body.decode('utf-8')
-        numbers_dict = json.loads(numbers)
+        try:
+            numbers_dict = json.loads(numbers)
+        except:
+            raise HTTPError(400, "wrong format, JSON expected")
         return numbers_dict
 
 # sum up numbers from memory
@@ -28,14 +32,8 @@ class SumUpNumbers(BasicHandler):
             raise HTTPError(400, "dictionary key not found")
 
         # arithmetics, add up numbers
-        result = 0
-        for number in data["numbers"]:
-            try:
-                number = float(number)
-            except ValueError:
-                raise HTTPError(400, "only numeral format expected")
-            result += number
-
+        numbers_list = data["numbers"]
+        result = sum(filter(lambda n: isinstance(n, Number), numbers_list))
         if result == int(result):
             result = int(result)
 
@@ -44,7 +42,7 @@ class SumUpNumbers(BasicHandler):
         # encoding JSON
         self.write(result_dict)
 
-# multiply numbers from memoryczy wystarczy, że zrobię
+# multiply numbers from memory
 class MultiplyNumbers(BasicHandler):
     def post(self):
         # catch format exceptions
@@ -56,15 +54,8 @@ class MultiplyNumbers(BasicHandler):
             raise HTTPError(400, "dictionary key not found")
 
         # arithmetics, add up numbers
-        result = 1
-        for number in data["numbers"]:
-            # catch data type exception
-            try:
-                number = float(number)
-            except ValueError:
-                raise HTTPError(400, "only numeral format expected")
-            result *= number
-
+        numbers_list = data["numbers"]
+        result = functools.reduce(lambda x, y: x * y, filter(lambda n: isinstance(n, Number), numbers_list))
         if result == int(result):
             result = int(result)
 
@@ -94,7 +85,6 @@ class SaveNumbers(BasicHandler):
             raise HTTPError(400, "only numeral format expected")
 
         saved_numbers.append(data["number"])
-        json.dumps(saved_numbers)
 
         status = {"status": "ok"}
         self.write(status)
