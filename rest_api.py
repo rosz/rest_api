@@ -42,7 +42,7 @@ class SumUpNumbers(BasicHandler):
         result_dict = {"result": result}
 
         # encoding JSON
-        return self.write(json.dumps(result_dict))
+        self.write(result_dict)
 
 # multiply numbers from memoryczy wystarczy, że zrobię
 class MultiplyNumbers(BasicHandler):
@@ -71,7 +71,7 @@ class MultiplyNumbers(BasicHandler):
         result_dict = {"result": result}
 
         # encoding JSON
-        return self.write(json.dumps(result_dict))
+        self.write(result_dict)
 
 # memory as list
 saved_numbers = []
@@ -97,19 +97,19 @@ class SaveNumbers(BasicHandler):
         json.dumps(saved_numbers)
 
         status = {"status": "ok"}
-        return self.write(json.dumps(status))
+        self.write(status)
 
     # return all numbers from memory
     def get(self):
         result_dict = {"memory": saved_numbers}
-        return self.write(json.dumps(result_dict))
+        self.write(result_dict)
 
     # clean memory, return status
     def delete(self):
         global saved_numbers
         saved_numbers = []
         status = {"status": "ok"}
-        return self.write(json.dumps(status))
+        self.write(status)
 
 
 if __name__ == "__main__":
