@@ -53,12 +53,11 @@ class MultiplyNumbers(BasicHandler):
         if "numbers" not in data:
             raise HTTPError(400, "dictionary key not found")
 
-        # arithmetics, add up numbers
+        # arithmetics, multiply numbers
         numbers_list = data["numbers"]
         result = functools.reduce(lambda x, y: x * y, filter(lambda n: isinstance(n, Number), numbers_list))
         if result == int(result):
             result = int(result)
-
         result_dict = {"result": result}
 
         # encoding JSON
@@ -85,7 +84,6 @@ class SaveNumbers(BasicHandler):
             raise HTTPError(400, "only numeral format expected")
 
         saved_numbers.append(data["number"])
-
         status = {"status": "ok"}
         self.write(status)
 
@@ -102,12 +100,15 @@ class SaveNumbers(BasicHandler):
         self.write(status)
 
 
-if __name__ == "__main__":
-    application = tornado.web.Application([
+def make_app():
+    return tornado.web.Application([
         (r"/", SumUpNumbers),
         (r"/add", SumUpNumbers),
         (r"/multiply", MultiplyNumbers),
         (r"/memory", SaveNumbers)
     ])
-    application.listen(8888)
+
+if __name__ == "__main__":
+    app = make_app()
+    app.listen(8888)
     tornado.ioloop.IOLoop.instance().start()
