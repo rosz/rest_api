@@ -95,8 +95,7 @@ class TestRestApi(AsyncHTTPTestCase):
         response = self.fetch("/memory", method="POST")
         self.assertEqual(response.code, 599)
 
-
-    # tests for deleting memory
+    # tests for method deleting memory
     def test_deleting_memory(self):
         response = self.fetch("/memory", method="DELETE", headers={"Content-Type": "application/json"})
         self.assertEqual(json.loads(response.body.decode('utf8')), {'status': 'ok'})
