@@ -9,5 +9,3 @@ A project provides 5 methods:
 * GET/memory --> returns all numbers from the data base
 * DELETE/memory --> deletes all numbers from the database, returns "status" : "ok"
 * Unit tests included
-
-Additional functionality: link shortener based on MongoDB
